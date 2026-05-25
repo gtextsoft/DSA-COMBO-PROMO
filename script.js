@@ -4,7 +4,7 @@
  */
 const WHATSAPP_NUMBER = "2340000000000";
 const WHATSAPP_MESSAGE =
-  "Hello, I want to secure the ₦15 million combo offer for Dr. Stephen Akintayo's weekly events. Please send me the payment details.";
+  "Hello, I want to secure Dr. Stephen Akintayo's combo offer. Please help me choose between ₦15M outright or ₦3M installment payment.";
 
 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
