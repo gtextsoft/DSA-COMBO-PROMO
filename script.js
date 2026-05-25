@@ -27,20 +27,73 @@ document.getElementById("year").textContent = new Date().getFullYear();
 const topBanner = document.getElementById("topBanner");
 const closeBanner = document.getElementById("closeBanner");
 
+function syncBannerState() {
+  const bannerVisible = topBanner && !topBanner.classList.contains("is-hidden");
+  document.body.classList.toggle("has-top-banner", Boolean(bannerVisible));
+  setMobileNavTop();
+}
+
 closeBanner?.addEventListener("click", () => {
   topBanner?.classList.add("is-hidden");
   document.body.classList.add("banner-dismissed");
   sessionStorage.setItem("bannerDismissed", "1");
+  syncBannerState();
 });
 
 if (sessionStorage.getItem("bannerDismissed")) {
   topBanner?.classList.add("is-hidden");
   document.body.classList.add("banner-dismissed");
+} else {
+  document.body.classList.add("has-top-banner");
 }
+
+syncBannerState();
 
 // Header scroll state
 const siteHeader = document.getElementById("siteHeader");
 let lastScroll = 0;
+
+// Mobile nav
+const navToggle = document.getElementById("navToggle");
+const navMobile = document.getElementById("navMobile");
+const navBackdrop = document.getElementById("navBackdrop");
+
+function setMobileNavTop() {
+  if (!navMobile || !siteHeader || window.innerWidth >= 900) return;
+  const headerBottom = siteHeader.getBoundingClientRect().bottom;
+  navMobile.style.top = `${headerBottom}px`;
+}
+
+function setMobileNavOpen(open) {
+  navToggle?.classList.toggle("is-open", open);
+  navToggle?.setAttribute("aria-expanded", String(open));
+  navToggle?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  navMobile?.classList.toggle("is-open", open);
+  navMobile?.setAttribute("aria-hidden", String(!open));
+  navBackdrop?.classList.toggle("is-visible", open);
+  navBackdrop?.setAttribute("aria-hidden", String(!open));
+  document.body.classList.toggle("nav-open", open);
+  if (open) setMobileNavTop();
+}
+
+function closeMobileNav() {
+  setMobileNavOpen(false);
+}
+
+navToggle?.addEventListener("click", () => {
+  setMobileNavOpen(!navToggle.classList.contains("is-open"));
+});
+
+navBackdrop?.addEventListener("click", closeMobileNav);
+
+navMobile?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", closeMobileNav);
+});
+
+window.addEventListener("resize", () => {
+  setMobileNavTop();
+  if (window.innerWidth >= 900) closeMobileNav();
+});
 
 window.addEventListener(
   "scroll",
@@ -51,26 +104,20 @@ window.addEventListener(
     const floatingCta = document.getElementById("floatingCta");
     floatingCta?.classList.toggle("is-visible", y > 500);
 
+    if (navMobile?.classList.contains("is-open")) setMobileNavTop();
+
     lastScroll = y;
   },
   { passive: true }
 );
 
-// Mobile nav
-const navToggle = document.getElementById("navToggle");
-const navMobile = document.getElementById("navMobile");
-
-navToggle?.addEventListener("click", () => {
-  const open = navToggle.classList.toggle("is-open");
-  navMobile.hidden = !open;
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && navMobile?.classList.contains("is-open")) {
+    closeMobileNav();
+  }
 });
 
-navMobile?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    navToggle.classList.remove("is-open");
-    navMobile.hidden = true;
-  });
-});
+setMobileNavTop();
 
 // Slots meter (visual urgency — update slotsRemaining as slots fill)
 const SLOTS_TOTAL = 10;

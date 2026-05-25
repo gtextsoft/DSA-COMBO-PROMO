@@ -38,17 +38,27 @@
         <a href="#first10">First 10 Bonus</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a href="#secure" class="btn btn--gold btn--sm nav-cta">Secure My Slot</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-actions">
+        <a href="#secure" class="btn btn--gold btn--sm nav-cta">Secure My Slot</a>
+        <button
+          type="button"
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="navMobile"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
-    <nav class="nav-mobile" id="navMobile" hidden>
-      <a href="#offer">The Offer</a>
-      <a href="#included">What's Included</a>
-      <a href="#first10">First 10 Bonus</a>
-      <a href="#faq">FAQ</a>
-      <a href="#secure" class="btn btn--gold">Secure My Slot</a>
+    <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Mobile navigation" aria-hidden="true">
+      <a href="#offer" class="nav-mobile__link">The Offer</a>
+      <a href="#included" class="nav-mobile__link">What's Included</a>
+      <a href="#first10" class="nav-mobile__link">First 10 Bonus</a>
+      <a href="#faq" class="nav-mobile__link">FAQ</a>
+      <a href="#secure" class="btn btn--gold btn--full nav-mobile__cta">Secure My Slot</a>
     </nav>
   </header>
 
