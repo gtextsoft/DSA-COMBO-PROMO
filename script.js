@@ -10,7 +10,7 @@ const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
 
 // Apply WhatsApp links
 document.querySelectorAll(
-  '#whatsappHero, #whatsappForm, .floating-cta .btn--whatsapp, .form-success .btn--whatsapp'
+  '#whatsappHero, #whatsappForm, .floating-cta .btn--whatsapp, #paymentModalWhatsapp'
 ).forEach((el) => {
   if (el) el.href = whatsappUrl;
 });
@@ -21,7 +21,8 @@ document.querySelectorAll('a[href*="wa.me"]').forEach((el) => {
 });
 
 // Year in footer
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // Top banner dismiss
 const topBanner = document.getElementById("topBanner");
@@ -135,75 +136,7 @@ function updateSlots() {
 
 updateSlots();
 
-// Lead form → Formspree (Vanilla JS AJAX)
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mjgzeqyw";
-const leadForm = document.getElementById("leadForm");
-const formSuccess = document.getElementById("formSuccess");
-const formError = document.getElementById("formError");
-const formSubmitBtn = document.getElementById("formSubmitBtn");
-
-function showFormError(message) {
-  if (!formError) return;
-  formError.textContent = message;
-  formError.hidden = false;
-}
-
-function hideFormError() {
-  if (!formError) return;
-  formError.hidden = true;
-  formError.textContent = "";
-}
-
-function setFormSubmitting(isSubmitting) {
-  if (!formSubmitBtn) return;
-  formSubmitBtn.disabled = isSubmitting;
-  formSubmitBtn.textContent = isSubmitting
-    ? "Sending…"
-    : "Secure My Combo Offer Now";
-}
-
-leadForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  hideFormError();
-
-  if (!leadForm.checkValidity()) {
-    leadForm.reportValidity();
-    return;
-  }
-
-  setFormSubmitting(true);
-
-  try {
-    const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      body: new FormData(leadForm),
-      headers: { Accept: "application/json" },
-    });
-
-    if (response.ok) {
-      leadForm.reset();
-      leadForm.hidden = true;
-      formSuccess.hidden = false;
-      formSuccess.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-
-    const data = await response.json().catch(() => ({}));
-    const fieldErrors = data.errors?.map((err) => err.message).filter(Boolean);
-    const message =
-      fieldErrors?.length > 0
-        ? fieldErrors.join(" ")
-        : "Something went wrong. Please try again or contact us on WhatsApp.";
-
-    showFormError(message);
-  } catch {
-    showFormError(
-      "Unable to send right now. Check your connection or use the WhatsApp button below."
-    );
-  } finally {
-    setFormSubmitting(false);
-  }
-});
+// Lead form + payment modal: handled inline in index.html (stays on page, no Formspree redirect)
 
 // Scroll reveal
 const revealTargets = document.querySelectorAll(
@@ -284,7 +217,6 @@ const socialProofTimes = [
   "12 minutes ago",
 ];
 
-const socialProofEl = document.getElementById("socialProof");
 const socialProofText = document.getElementById("socialProofText");
 const socialProofTime = document.getElementById("socialProofTime");
 const socialProofAvatar = document.getElementById("socialProofAvatar");
