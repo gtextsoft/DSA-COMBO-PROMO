@@ -230,3 +230,152 @@ revealTargets.forEach((el) => revealObserver.observe(el));
 document.querySelectorAll(".combo-card").forEach((card, i) => {
   card.style.transitionDelay = `${i * 0.08}s`;
 });
+
+// Social proof — rotating “recent purchase” activity
+const SOCIAL_PROOF_KEY = "comboSocialProofOff";
+
+const socialProofNames = [
+  { first: "Chidi", last: "O" },
+  { first: "Amaka", last: "N" },
+  { first: "Tunde", last: "B" },
+  { first: "Ngozi", last: "E" },
+  { first: "Emeka", last: "A" },
+  { first: "Fatima", last: "Y" },
+  { first: "Ibrahim", last: "M" },
+  { first: "Blessing", last: "K" },
+  { first: "Olumide", last: "S" },
+  { first: "Adaeze", last: "C" },
+  { first: "Yusuf", last: "H" },
+  { first: "Kemi", last: "A" },
+  { first: "Segun", last: "O" },
+  { first: "Zainab", last: "L" },
+  { first: "Ifeanyi", last: "U" },
+  { first: "Halima", last: "B" },
+  { first: "Rotimi", last: "D" },
+  { first: "Chiamaka", last: "I" },
+];
+
+const socialProofCities = [
+  "Lagos",
+  "Abuja",
+  "Port Harcourt",
+  "Ibadan",
+  "Kano",
+  "Enugu",
+  "Benin City",
+  "Accra",
+  "London",
+  "Dubai",
+];
+
+const socialProofActions = [
+  "just secured the combo offer",
+  "completed payment for the ₦15M combo",
+  "reserved the premium combo package",
+  "joined the combo offer",
+];
+
+const socialProofTimes = [
+  "Just now",
+  "2 minutes ago",
+  "4 minutes ago",
+  "6 minutes ago",
+  "8 minutes ago",
+  "12 minutes ago",
+];
+
+const socialProofEl = document.getElementById("socialProof");
+const socialProofText = document.getElementById("socialProofText");
+const socialProofTime = document.getElementById("socialProofTime");
+const socialProofAvatar = document.getElementById("socialProofAvatar");
+const socialProofClose = document.getElementById("socialProofClose");
+
+let socialProofTimer = null;
+let socialProofHideTimer = null;
+let lastSocialProofIndex = -1;
+
+function pickSocialProofEntry() {
+  let index;
+  do {
+    index = Math.floor(Math.random() * socialProofNames.length);
+  } while (index === lastSocialProofIndex && socialProofNames.length > 1);
+  lastSocialProofIndex = index;
+
+  const person = socialProofNames[index];
+  const city = socialProofCities[Math.floor(Math.random() * socialProofCities.length)];
+  const action = socialProofActions[Math.floor(Math.random() * socialProofActions.length)];
+  const time = socialProofTimes[Math.floor(Math.random() * socialProofTimes.length)];
+
+  return { person, city, action, time };
+}
+
+function hideSocialProofToast() {
+  if (!socialProofEl) return;
+  socialProofEl.classList.remove("is-visible");
+}
+
+function showSocialProof() {
+  if (!socialProofEl || sessionStorage.getItem(SOCIAL_PROOF_KEY)) return;
+  if (document.body.classList.contains("nav-open")) return;
+
+  const { person, city, action, time } = pickSocialProofEntry();
+  const displayName = `${person.first} ${person.last}.`;
+
+  if (socialProofAvatar) {
+    socialProofAvatar.textContent = `${person.first[0]}${person.last[0]}`;
+  }
+  if (socialProofText) {
+    socialProofText.innerHTML = `<strong>${displayName}</strong> from ${city} ${action}`;
+  }
+  if (socialProofTime) {
+    socialProofTime.textContent = time;
+  }
+
+  socialProofEl.classList.remove("is-off");
+  hideSocialProofToast();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      socialProofEl.classList.add("is-visible");
+    });
+  });
+
+  clearTimeout(socialProofHideTimer);
+  socialProofHideTimer = setTimeout(hideSocialProofToast, 9000);
+}
+
+function scheduleSocialProof() {
+  clearTimeout(socialProofTimer);
+  if (sessionStorage.getItem(SOCIAL_PROOF_KEY)) return;
+
+  const delay = 6000 + Math.random() * 8000;
+  socialProofTimer = setTimeout(() => {
+    showSocialProof();
+    scheduleSocialProof();
+  }, delay);
+}
+
+function initSocialProof() {
+  if (!socialProofEl) return;
+
+  if (sessionStorage.getItem(SOCIAL_PROOF_KEY)) {
+    socialProofEl.classList.add("is-off");
+    return;
+  }
+
+  socialProofEl.classList.remove("is-off");
+
+  // First popup quickly so visitors see it
+  setTimeout(showSocialProof, 2000);
+  scheduleSocialProof();
+}
+
+socialProofClose?.addEventListener("click", () => {
+  sessionStorage.setItem(SOCIAL_PROOF_KEY, "1");
+  clearTimeout(socialProofTimer);
+  clearTimeout(socialProofHideTimer);
+  hideSocialProofToast();
+  socialProofEl?.classList.add("is-off");
+});
+
+initSocialProof();
