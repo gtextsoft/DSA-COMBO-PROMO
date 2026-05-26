@@ -12,7 +12,7 @@ npx serve .
 
 ## Before Launch
 
-1. **WhatsApp number** — Edit `WHATSAPP_NUMBER` in `script.js` (e.g. `2348012345678` for Nigeria).
+1. **WhatsApp number** — Edit `WHATSAPP_NUMBER` and `WHATSAPP_MESSAGE` in `script.js` (current: `+234 818 000 0618`).
 2. **Slots remaining** — Update `slotsRemaining` in `script.js` as premium slots are claimed.
 3. **Formspree** — Leads submit to `https://formspree.io/f/mjgzeqyw` via AJAX. Confirm submissions in your [Formspree dashboard](https://formspree.io/forms/mjgzeqyw/submissions).
 4. **Logo** — Uses `assets/logo.png` with gold tint via CSS. Replace the file to update branding.

@@ -2,9 +2,21 @@
  * Dr. Stephen Akintayo Combo Landing Page
  * Update WHATSAPP_NUMBER below with your real WhatsApp number (country code, no + or spaces)
  */
-const WHATSAPP_NUMBER = "2340000000000";
-const WHATSAPP_MESSAGE =
-  "Hello, I want to secure Dr. Stephen Akintayo's combo offer. Please help me choose between ₦15M outright or ₦3M installment payment.";
+const WHATSAPP_NUMBER = "2348180000618";
+const WHATSAPP_MESSAGE = `Hello Stephen Akintayo Company,
+
+I am interested in the Ultimate Business, AI, Books & Premium Mentorship Combo from your website.
+
+I would like to:
+• Choose my payment option (₦15M outright or ₦3M installment)
+• Get my Paystack payment link
+• Confirm if First 10 premium bonus slots are still available
+
+My name:
+My phone:
+My city/country:
+
+Thank you.`;
 
 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
